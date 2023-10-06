@@ -56,6 +56,13 @@ while(True):
         if event.type == pygame.QUIT:
             pygame.quit()
             exit(0)
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            mousePos = pygame.mouse.get_pos()
+            if sidebarPage!=1 and mousePos[0] > 40 and mousePos[0] < 80 and mousePos[1] > 955 and mousePos[1] < 995:
+                sidebarPage-=1
+            elif sidebarPage!=2 and mousePos[0] > 120 and mousePos[0] < 160 and mousePos[1] > 955 and mousePos[1] < 995:
+                sidebarPage+=1
+
 
     screen.fill((0, 0, 0))
     pygame.draw.rect(screen, (255, 255, 255), (0, 0, 200, 1000))
@@ -88,15 +95,21 @@ while(True):
         print("Food: " + str(food))
         print("Research:" + str(research))
 
-    #drawing bulding to buy in the side bar
-    for x in range(5):
-        pygame.draw.rect(screen, (0, 0, 0), (10, 5 + x*190, 180, 180))
-
+    #drawing buldings to buy in the side bar
+    if sidebarPage == 1:
+        for x in range(5):
+            pygame.draw.rect(screen, (0, 0, 0), (10, 5 + x*190, 180, 180))
+    elif sidebarPage == 2:
+        for x in range(3):
+            pygame.draw.rect(screen, (0, 0, 0), (10, 5 + x*190, 180, 180))
+    
     #draw page buttons
     if sidebarPage != 1:
+        pygame.draw.rect(screen, (100, 100, 100), (40, 955, 40, 40))
         pygame.draw.polygon(screen, (0,0,0), ((40, 995), (80, 995), (60, 955)))
     #second triangle upside down
     if sidebarPage != 2:
+        pygame.draw.rect(screen, (100, 100, 100), (120, 955, 40, 40))
         pygame.draw.polygon(screen, (0,0,0), ((120, 955), (160, 955), (140, 995)))
 
 
