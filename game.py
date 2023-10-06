@@ -12,6 +12,27 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 screen2 = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Titan City")
 
+#loading images
+background = pygame.image.load("background.png")
+background = pygame.transform.smoothscale(background, (1000, 1000))
+
+gridImages = {
+    1: pygame.transform.smoothscale(pygame.image.load("1.png"), (100, 100)),
+    2: pygame.transform.smoothscale(pygame.image.load("2.png"), (100, 100)),
+    3: pygame.transform.smoothscale(pygame.image.load("3.png"), (100, 100)),
+    4: pygame.transform.smoothscale(pygame.image.load("4.png"), (100, 100)),
+    5: pygame.transform.smoothscale(pygame.image.load("5.png"), (100, 100)),
+}
+
+menuImages = {
+    1: pygame.image.load("1.png"),
+    2: pygame.image.load("2.png"),
+    3: pygame.image.load("3.png"),
+    4: pygame.image.load("4.png"),
+    5: pygame.image.load("5.png"),
+}
+
+
 #define 100x100 grid
 grid = [[0 for x in range(10)] for y in range(10)]
 
@@ -65,16 +86,24 @@ while(True):
 
 
     screen.fill((0, 0, 0))
+    screen.blit(background, (200, 0))
     pygame.draw.rect(screen, (255, 255, 255), (0, 0, 200, 1000))
     
     #draw grid
     for x in range(10):
         for y in range(10):
-            pygame.draw.rect(screen, (255, 255, 255), (x*100+200, y*100, 100, 100), 1)  #to be rmoved
-            pygame.draw.rect(screen, (grid[x][y]*25, 0, 0), (x*100+200, y*100, 99, 99)) #to be switched to 100
+            #pygame.draw.rect(screen, (255, 255, 255), (x*100+200, y*100, 100, 100), 1)  #to be rmoved
+            #pygame.draw.rect(screen, (grid[x][y]*25, 0, 0), (x*100+200, y*100, 99, 99)) #to be switched to 100
+            if grid[x][y] != 0:
+                screen.blit(gridImages[grid[x][y]], (x*100+200, y*100))
     grid[4][4] = 1
+    grid[4][5] = 2
+    grid[5][4] = 3
+    grid[5][5] = 4
+    grid[6][4] = 5
     
-    if ((time.time() - timestamp) > 5):
+    if ((time.time() - timestamp) > 0.5):
+   # if (True):
         #calvculating income
         for x in range(10):
             for y in range(10):
@@ -87,6 +116,15 @@ while(True):
                         food += buildings[grid[x][y]].income
                     elif buildings[grid[x][y]].incomeType == "research":
                         research += buildings[grid[x][y]].income
+
+        #calculating used resources
+        for x in range(10):
+            for y in range(10):
+                if grid[x][y] != 0:
+                    resources -= buildings[grid[x][y]].usedResources
+                    energy -= buildings[grid[x][y]].usedEnergy
+                    food -= buildings[grid[x][y]].usedFood
+                    research -= buildings[grid[x][y]].usedResearch
         timestamp = time.time()
 
         print("\n\nMoney: " + str(money))
@@ -94,6 +132,10 @@ while(True):
         print("Energy: " + str(energy))
         print("Food: " + str(food))
         print("Research:" + str(research))
+
+        if research > 150:
+            money += research - 150
+            research = 150
 
     #drawing buldings to buy in the side bar
     if sidebarPage == 1:
